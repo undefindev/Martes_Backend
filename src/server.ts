@@ -12,6 +12,9 @@ connectDB()
 // creamos la instancia de express.. que no se que vrga es una instancia todavia a ciencia cierta por cierto
 const app = express()
 
+// avilitamos la lectura de los .json
+app.use(express.json())
+
 // Routes
 app.use('/api/projects', projectRoutes)
 

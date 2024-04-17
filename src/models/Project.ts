@@ -5,7 +5,7 @@ import mongoose, { Schema, Document} from "mongoose";
 export type ProjectType = Document & {
   projectName: string
   clientName: string
-  desciption: string
+  description: string
 }
 
 // y este el schema
