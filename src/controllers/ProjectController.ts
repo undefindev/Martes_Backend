@@ -5,16 +5,22 @@ import Project from "../models/Project"
 export class ProjectController {
   // estos metodos son staticos porque no requiren ser instanciados
   static createProject = async (req: Request, res: Response) => {
-    const project = new Project(req.body)
+    const project = new Project(req.body) // creamos el projecto
     try {
-      await project.save()
-      res.send('el projecto se creeo correctamente')
-    } catch (error) {
+      await project.save() // luego lo guardamos
+      res.send('el projecto se creeo correctamente') // si todo bien nos muestra este mensaje
+    } catch (error) { // y si no chinga tumadre
       console.log(error)
     }
   }
 
+  // este es para jalar todos los projectos.. usamos un 'find'
   static getAllProjects = async (req: Request, res: Response) => {
-    res.send('todos los projectos')
+    try {
+        const projects = await Project.find({})
+        res.json(projects)
+    } catch (error) {
+      console.log(error) // esto para que nos muestre el error si algo salio mal
+    }
   }
 }
