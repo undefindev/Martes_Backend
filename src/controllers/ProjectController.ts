@@ -17,8 +17,61 @@ export class ProjectController {
   // este es para jalar todos los projectos.. usamos un 'find'
   static getAllProjects = async (req: Request, res: Response) => {
     try {
-        const projects = await Project.find({})
+        const projects = await Project.find({}) // metodo 'find'
         res.json(projects)
+    } catch (error) {
+      console.log(error) // esto para que nos muestre el error si algo salio mal
+    }
+  }
+
+  // este es para jalar traernos un projecto po su 'id;'
+  static getProjectById = async (req: Request, res: Response) => {
+    const { id } = req.params
+    try {
+        const project = await Project.findById(id) // medoto "findById"
+
+        if(!project) {
+          const error = new Error('No se Encontro el Projecto')
+          return res.status(404).json({error: error.message})
+        }
+        res.json(project)
+    } catch (error) {
+      console.log(error) // esto para que nos muestre el error si algo salio mal
+    }
+  }
+
+  // actualizar un maldito registro'
+  static updateProject = async (req: Request, res: Response) => {
+    const { id } = req.params
+    try {
+        const project = await Project.findByIdAndUpdate(id, req.body) // esta vez toma dos parametros"
+
+        if(!project) { // este no se porque no esa jalando.. entra primero el otro console
+          const error = new Error('No se Encontro el Projecto')
+          return res.status(404).json({error: error.message})
+        }
+        await project.save()
+        res.send('projecto Actualizado')
+    } catch (error) {
+      console.log(error) // esto para que nos muestre el error si algo salio mal
+    }
+  }
+
+   // actualizar un maldito registro'
+   static deleteProject = async (req: Request, res: Response) => {
+    const { id } = req.params
+    try {
+        /* const project = await Project.findByIdAndDelete(id)
+        res.send('projecto Eliminado') .. este se utiliza en caso de eliminacion normal.. pero nosotros ocupamos privilegios para eliminar una tarea */
+        const project = await Project.findById(id)
+
+        if(!project) { // este no se porque no esa jalando.. entra primero el otro console
+          const error = new Error('No se Encontro el Projecto')
+          return res.status(404).json({error: error.message})
+        }
+
+        await project.deleteOne()
+        res.send('projecto eliminado')
     } catch (error) {
       console.log(error) // esto para que nos muestre el error si algo salio mal
     }
