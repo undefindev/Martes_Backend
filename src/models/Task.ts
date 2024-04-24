@@ -1,10 +1,11 @@
-import mongoose, { Schema, Document} from "mongoose";
+import mongoose, { Schema, Document, Types} from "mongoose";
 
 
 // este es el type de typeScript
 export interface ITask extends Document {
   name: string
   description: string
+  project: Types.ObjectId // aqui agregamos el id del projecto 
 }
 
 // creamos el schema de mongo
@@ -20,6 +21,10 @@ export const TaskSchema: Schema = new Schema({
     required: true,
     trim: true
   },
-})
+  // una tarea va a tener un projecto
+  project: Types.ObjectId,
+  ref: 'Project'
+  /* aqui lo que le estamos diciendo practicamente es creame el docuemto tiene que ser con el 'objectId y la referencia va ser el modelo 'project' */
+}, {timestamps: true})
 const Task = mongoose.model<ITask>('Task', TaskSchema)
 export default Task
