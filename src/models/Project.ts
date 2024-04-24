@@ -2,7 +2,7 @@ import mongoose, { Schema, Document} from "mongoose";
 
 
 // este es el type de typeScript
-export type ProjectType = Document & {
+export interface IProject extends Document {
   projectName: string
   clientName: string
   description: string
@@ -28,5 +28,5 @@ const ProjectSchema: Schema = new Schema({
 })
 
 // aqui definimos el modelo y se registra en la instancia de mongoos
-const Project = mongoose.model<ProjectType>('Project', ProjectSchema)
+const Project = mongoose.model<IProject>('Project', ProjectSchema)
 export default Project
