@@ -30,6 +30,7 @@ export class ProjectController {
     try {
         const project = await Project.findById(id) // medoto "findById"
 
+        // este codigo revisa si un projecto existe o no
         if(!project) {
           const error = new Error('No se Encontro el Projecto')
           return res.status(404).json({error: error.message})

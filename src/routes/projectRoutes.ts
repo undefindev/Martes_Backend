@@ -2,6 +2,7 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 import { ProjectController } from "../controllers/ProjectController";
 import { handleInputErrors } from "../middleware/validation";
+import { TaskController } from "../controllers/TaskController";
 
 const router = Router()
 
@@ -27,7 +28,7 @@ router.get('/:id',
   ProjectController.getProjectById
 )
 
-// oactualizar un registro.. lo ms dificil.. segun
+// oactualizar un registro.. lo mas dificil
 router.put('/:id',
   param('id').isMongoId().withMessage('este ID no es valido'), // validamos el 'id' y despues validamos los datos
   body('projectName')
@@ -45,6 +46,13 @@ router.delete('/:id',
   param('id').isMongoId().withMessage('este ID no es valido'),
   handleInputErrors, // el middleware uque creamos para los errores
   ProjectController.deleteProject
+)
+
+/* podriamos crear un nuevo archivo de rutas para las tareas.. pero como las tareas dependen de los proyectos lo vamos a crear aqui mismo */
+
+/** Route para las tareas */
+router.post('/:projectId/task',
+  TaskController.createTask
 )
 
 export default router
