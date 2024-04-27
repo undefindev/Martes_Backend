@@ -27,7 +27,7 @@ const ProjectSchema: Schema = new Schema({
     required: true,
     trim: true
   },
-  // pero un projecto va a tener multiples tareas
+  // pero un projecto va a tener multiples tareas.. esta es la referencia
   tasks: [
     {
       type: Types.ObjectId,

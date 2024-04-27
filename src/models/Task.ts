@@ -34,7 +34,7 @@ export const TaskSchema: Schema = new Schema({
     required: true,
     trim: true
   },
-  // una tarea va a tener un projecto
+  // una tarea va a tener un projecto.. esta es la referencia
   project: {
     type: Types.ObjectId,
     ref: 'Project'
@@ -45,5 +45,6 @@ export const TaskSchema: Schema = new Schema({
     default: taskStatus.PENDING // este sera el valor que tenga por defecto cada tarea nueva.. hasta que se le asigne un chango que se ponga a trabajar en ella
   }
 }, {timestamps: true})
+
 const Task = mongoose.model<ITask>('Task', TaskSchema)
 export default Task
