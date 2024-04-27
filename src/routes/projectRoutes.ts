@@ -52,7 +52,7 @@ router.delete('/:id',
 /* podriamos crear un nuevo archivo de rutas para las tareas.. pero como las tareas dependen de los proyectos lo vamos a crear aqui mismo */
 
 /** Route para las tareas */
-router.post('/:projectId/task',
+router.post('/:projectId/tasks',
   validateProjectExists, // si existe el projecto se pasa al controlador
   body('name')
     .notEmpty().withMessage('todos los malditos campos son obligatorios vrga..!'),
@@ -60,6 +60,11 @@ body('description')
     .notEmpty().withMessage('todos los malditos campos son obligatorios vrga..!'),
   handleInputErrors, // el middleware uque creamos para los errores
   TaskController.createTask
+)
+
+router.get('/:projectId/tasks',
+  validateProjectExists, // el middleware que tenemos para validar si existe
+  TaskController.getProjectTasks
 )
 
 export default router

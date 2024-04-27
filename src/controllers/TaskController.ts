@@ -12,7 +12,16 @@ export class TaskController {
       await Promise.allSettled([task.save(), req.project.save()]) // aqui estamos optimisando el codigo con 'Promise.allSettled'
       res.send('tarea creada')
     } catch (error) {
-      console.log(error)
+      res.status(500).json({error: 'valio vrga..!!'})
+    }
+  }
+
+  static getProjectTasks = async (req: Request, res: Response) => {
+    try {
+      const tasks = await Task.find({project: req.project.id})
+      res.json(tasks)
+    } catch (error) {
+      res.status(500).json({error: 'valio vrga..!!'})
     }
   }
 }
