@@ -54,6 +54,11 @@ router.delete('/:id',
 /** Route para las tareas */
 router.post('/:projectId/task',
   validateProjectExists, // si existe el projecto se pasa al controlador
+  body('name')
+    .notEmpty().withMessage('todos los malditos campos son obligatorios vrga..!'),
+body('description')
+    .notEmpty().withMessage('todos los malditos campos son obligatorios vrga..!'),
+  handleInputErrors, // el middleware uque creamos para los errores
   TaskController.createTask
 )
 
