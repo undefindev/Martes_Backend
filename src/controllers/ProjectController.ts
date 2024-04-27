@@ -28,7 +28,7 @@ export class ProjectController {
   static getProjectById = async (req: Request, res: Response) => {
     const { id } = req.params
     try {
-        const project = await Project.findById(id) // medoto "findById"
+        const project = await Project.findById(id).populate('tasks') // medoto "findById"
 
         // este codigo revisa si un projecto existe o no
         if(!project) {
