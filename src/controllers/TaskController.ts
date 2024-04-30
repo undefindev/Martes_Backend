@@ -57,7 +57,7 @@ export class TaskController {
   static updateTask = async (req: Request, res: Response) => {
     try {
       const { taskId } = req.params;
-      const task = await Task.findByIdAndUpdate(taskId, req.body);
+      const task = await Task.findByIdAndUpdate(taskId);
       // ahora validamos
       if (!task) {
         const error = new Error("Tarea no encontrada");
@@ -70,10 +70,41 @@ export class TaskController {
         return res.status(400).json({ error: error.message });
       }
 
+      task.name = req.body.name;
+      task.description = req.body.description;
+      await task.save();
+
       // pero si todo salio bien.. entonces ya chingamos
       res.send("Tarea Actualizada"); // aqui ya no es .json a la variable 'task'
     } catch (error) {
       res.status(500).json({ error: "valio mandarina..!!" });
+    }
+  };
+
+  // deleteTask
+  static deleteTask = async (req: Request, res: Response) => {
+    try {
+      const { taskId } = req.params;
+      const task = await Task.findById(taskId, req.body);
+      if (!task) {
+        const error = new Error("tarea no encontrada");
+        return res.status(404).json({ error: error.message });
+      }
+
+      // traete todas las tareas que sean diferentes a
+      // ojo aqui.. el segundo task del filter. nada mas es 'tasks' array en el projecto no la tarea en si
+      req.project.tasks = req.project.tasks.filter(
+        (task) => task.toString() !== taskId
+      );
+
+      /* await task.deleteOne() // elimina la tarea y.. */
+      /* await req.project.save() // luego guarda los cambios */
+
+      await Promise.allSettled([task.deleteOne(), req.project.save()]);
+
+      res.send("tarea eliminada");
+    } catch (error) {
+      res.status(500).json({ error: "algo salio mal" });
     }
   };
 }
@@ -81,3 +112,12 @@ export class TaskController {
 /* este fue para crear la tarea, asignarla al projecto este codigo quedo un poco mas limpio que el de projectController.. segun, aqui no hay validacion el middleware se encarga de hacer todo el desmadre */
 
 /* siempre que trabajemos en una DB de mongo.. con los ID hay que asegurarnos de convertirlos a '.toString()' porque el 'new object id' siempre da un valor diferente como si fuera un objeto  */
+
+/* await task.deleteOne()
+      await req.project.save() */
+
+/* aqui hay dos cosas muy curiosas.. el .findById en lugar del findandupdate o findAndDelete, no estamos usando estos metodos porque tenemos que psara las validaciones primero que todo */
+
+/* hay que tener cuidado con los 'object-Id' cuando lo comparemos con algun operador porquwe los toma como valores diferentes */
+
+/* cuando tengamos dos consultas que no sean dependiente.. optimizemos con 'Promise.allSettled */
