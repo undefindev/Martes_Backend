@@ -80,8 +80,33 @@ router.post(
   TaskController.createTask
 );
 
+// routa para listar todas las tareas
 router.get("/:projectId/tasks", TaskController.getProjectTasks);
 
+// ruta para una tarea en especifico
+router.get(
+  "/:projectId/:tasks/:taskId",
+  param("taskId").isMongoId().withMessage("este ID no es valido"),
+  handleInputErrors, // el middleware uque creamos para los errores
+  TaskController.getTaskById
+);
+
+// ruta para actualizar una tarea una tarea en especifico
+router.put(
+  "/:projectId/:tasks/:taskId",
+  param("taskId").isMongoId().withMessage("este ID no es valido"), // validamos que sea un registro de mongo valido y despues
+  // validamos los campos
+  body("name")
+    .notEmpty()
+    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+  body("description")
+    .notEmpty()
+    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+  handleInputErrors, // el middleware uque creamos para los errores
+  TaskController.updateTask // hacemos referencia la funcion del controlador
+);
+
+// eliminando una tarea en especifico
 router.get(
   "/:projectId/:tasks/:taskId",
   param("taskId").isMongoId().withMessage("este ID no es valido"),
