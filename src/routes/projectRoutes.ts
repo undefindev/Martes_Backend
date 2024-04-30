@@ -63,7 +63,6 @@ router.delete(
 /* podriamos crear un nuevo archivo de rutas para las tareas.. pero como las tareas dependen de los proyectos lo vamos a crear aqui mismo */
 
 /** Route para las tareas */
-
 // implementamos un 'param' para no repetir el middleware de validacion en cada ruta
 router.param("projectId", validateProjectExists);
 
@@ -96,22 +95,20 @@ router.put(
   "/:projectId/:tasks/:taskId",
   param("taskId").isMongoId().withMessage("este ID no es valido"), // validamos que sea un registro de mongo valido y despues
   // validamos los campos
-  body("name")
-    .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+  body("name").notEmpty().withMessage("el nombre de la TAREA es obligatorio"),
   body("description")
     .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+    .withMessage("la descricion de la TAREA es obligatorio"),
   handleInputErrors, // el middleware uque creamos para los errores
   TaskController.updateTask // hacemos referencia la funcion del controlador
 );
 
-// eliminando una tarea en especifico
-router.get(
+// ruta para eliminar una tarea en especifico
+router.delete(
   "/:projectId/:tasks/:taskId",
   param("taskId").isMongoId().withMessage("este ID no es valido"),
   handleInputErrors, // el middleware uque creamos para los errores
-  TaskController.getTaskById
+  TaskController.deleteTask
 );
 
 export default router;
