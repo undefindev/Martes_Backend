@@ -4,7 +4,7 @@ import { ProjectController } from "../controllers/ProjectController";
 import { handleInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
 import { projectExists } from "../middleware/project";
-import { taskExists } from "../middleware/task";
+import { taskBeLongToProject, taskExists } from "../middleware/task";
 
 const router = Router();
 
@@ -86,8 +86,9 @@ router.get("/:projectId/tasks", TaskController.getProjectTasks);
 
 // ruta para una tarea en especifico
 
-// implemenamos un param para el middleware igual que arriba
+// implemenamos los param para el middleware igual que arriba
 router.param("taskId", taskExists);
+router.param("taskId", taskBeLongToProject);
 
 router.get(
   "/:projectId/:tasks/:taskId",

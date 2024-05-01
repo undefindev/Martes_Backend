@@ -32,11 +32,6 @@ export class TaskController {
   // traernos una tarea por su ID
   static getTaskById = async (req: Request, res: Response) => {
     try {
-      // si la tarea no corresponde al projecto
-      if (req.task.project.toString() !== req.project.id) {
-        const error = new Error("Accion no valida");
-        return res.status(400).json({ error: error.message });
-      }
       res.json(req.task);
     } catch (error) {
       res.status(500).json({ error: "valio mandarina..!!" });
@@ -45,12 +40,6 @@ export class TaskController {
 
   static updateTask = async (req: Request, res: Response) => {
     try {
-      // ahora, si le pasamos datos no validos retorname lo siguiente
-      if (req.task.project.toString() !== req.project.id) {
-        const error = new Error("no me rrecontra jodas..!!");
-        return res.status(400).json({ error: error.message });
-      }
-
       req.task.name = req.body.name;
       req.task.description = req.body.description;
       await req.task.save();
@@ -110,11 +99,17 @@ export class TaskController {
 
 /* cuando tengamos dos consultas que no sean dependiente.. optimizemos con 'Promise.allSettled */
 
-/*  esto se fue a la vrga porque creamos el middleware
+/*  esto se fue a la vrga porque creamos los  middleware
 
 const { taskId } = req.params;
       const task = await Task.findById(taskId);
       if (!task) {
         const error = new Error("Tarea no encontrada");
         return res.status(404).json({ error: error.message });
+      } */
+
+/* // ahora, si le pasamos datos no validos retorname lo siguiente
+      if (req.task.project.toString() !== req.project.id) {
+        const error = new Error("no me rrecontra jodas..!!");
+        return res.status(400).json({ error: error.message });
       } */
