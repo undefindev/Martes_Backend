@@ -3,7 +3,8 @@ import { body, param } from "express-validator";
 import { ProjectController } from "../controllers/ProjectController";
 import { handleInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
-import { validateProjectExists } from "../middleware/project";
+import { projectExists } from "../middleware/project";
+import { taskExists } from "../middleware/task";
 
 const router = Router();
 
@@ -63,8 +64,9 @@ router.delete(
 /* podriamos crear un nuevo archivo de rutas para las tareas.. pero como las tareas dependen de los proyectos lo vamos a crear aqui mismo */
 
 /** Route para las tareas */
+
 // implementamos un 'param' para no repetir el middleware de validacion en cada ruta
-router.param("projectId", validateProjectExists);
+router.param("projectId", projectExists);
 
 router.post(
   "/:projectId/tasks",
@@ -83,6 +85,10 @@ router.post(
 router.get("/:projectId/tasks", TaskController.getProjectTasks);
 
 // ruta para una tarea en especifico
+
+// implemenamos un param para el middleware igual que arriba
+router.param("taskId", taskExists);
+
 router.get(
   "/:projectId/:tasks/:taskId",
   param("taskId").isMongoId().withMessage("este ID no es valido"),
@@ -91,6 +97,7 @@ router.get(
 );
 
 // ruta para actualizar una tarea una tarea en especifico
+
 router.put(
   "/:projectId/:tasks/:taskId",
   param("taskId").isMongoId().withMessage("este ID no es valido"), // validamos que sea un registro de mongo valido y despues

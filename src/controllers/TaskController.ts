@@ -32,23 +32,12 @@ export class TaskController {
   // traernos una tarea por su ID
   static getTaskById = async (req: Request, res: Response) => {
     try {
-      const { taskId } = req.params;
-      const task = await Task.findById(taskId);
-      if (!task) {
-        const error = new Error("Tarea no encontrada");
-        return res.status(404).json({ error: error.message });
-      }
-
-      // veamos que nos muestra la consolita magica
-      /* console.log(task.project.toString())
-      console.log(req.project.id) */
-
       // si la tarea no corresponde al projecto
-      if (task.project.toString() !== req.project.id) {
+      if (req.task.project.toString() !== req.project.id) {
         const error = new Error("Accion no valida");
         return res.status(400).json({ error: error.message });
       }
-      res.json(task);
+      res.json(req.task);
     } catch (error) {
       res.status(500).json({ error: "valio mandarina..!!" });
     }
@@ -56,23 +45,15 @@ export class TaskController {
 
   static updateTask = async (req: Request, res: Response) => {
     try {
-      const { taskId } = req.params;
-      const task = await Task.findByIdAndUpdate(taskId);
-      // ahora validamos
-      if (!task) {
-        const error = new Error("Tarea no encontrada");
-        return res.status(404).json({ error: error.message });
-      }
-
       // ahora, si le pasamos datos no validos retorname lo siguiente
-      if (task.project.toString() !== req.project.id) {
+      if (req.task.project.toString() !== req.project.id) {
         const error = new Error("no me rrecontra jodas..!!");
         return res.status(400).json({ error: error.message });
       }
 
-      task.name = req.body.name;
-      task.description = req.body.description;
-      await task.save();
+      req.task.name = req.body.name;
+      req.task.description = req.body.description;
+      await req.task.save();
 
       // pero si todo salio bien.. entonces ya chingamos
       res.send("Tarea Actualizada"); // aqui ya no es .json a la variable 'task'
@@ -84,23 +65,16 @@ export class TaskController {
   // deleteTask
   static deleteTask = async (req: Request, res: Response) => {
     try {
-      const { taskId } = req.params;
-      const task = await Task.findById(taskId);
-      if (!task) {
-        const error = new Error("tarea no encontrada");
-        return res.status(404).json({ error: error.message });
-      }
-
       // traete todas las tareas que sean diferentes a
       // ojo aqui.. el segundo task del filter. nada mas es 'tasks' array en el projecto no la tarea en si
       req.project.tasks = req.project.tasks.filter(
-        (task) => task.toString() !== taskId
+        (task) => task.toString() !== req.task.id.toString()
       );
 
       /* await task.deleteOne() // elimina la tarea y.. */
       /* await req.project.save() // luego guarda los cambios */
 
-      await Promise.allSettled([task.deleteOne(), req.project.save()]);
+      await Promise.allSettled([req.task.deleteOne(), req.project.save()]);
 
       res.send("tarea eliminada");
     } catch (error) {
@@ -108,19 +82,12 @@ export class TaskController {
     }
   };
 
+  // updateStatus de las tareas
   static updateStatus = async (req: Request, res: Response) => {
     try {
-      const { taskId } = req.params; // primero revisas la tarea y despues...
-
-      const task = await Task.findById(taskId);
-      if (!task) {
-        const error = new Error("tarea no encontrada");
-        return res.status(404).json({ error: error.message });
-      }
-
       const { status } = req.body; // revisas el estado
-      task.status = status;
-      await task.save();
+      req.task.status = status;
+      await req.task.save();
       res.send("estado actualizado");
     } catch (error) {
       res.status(500).json({ error: "valio vrga..!!" });
@@ -142,3 +109,12 @@ export class TaskController {
 /* hay que tener cuidado con los 'object-Id' cuando lo comparemos con algun operador porquwe los toma como valores diferentes */
 
 /* cuando tengamos dos consultas que no sean dependiente.. optimizemos con 'Promise.allSettled */
+
+/*  esto se fue a la vrga porque creamos el middleware
+
+const { taskId } = req.params;
+      const task = await Task.findById(taskId);
+      if (!task) {
+        const error = new Error("Tarea no encontrada");
+        return res.status(404).json({ error: error.message });
+      } */
