@@ -105,10 +105,19 @@ router.put(
 
 // ruta para eliminar una tarea en especifico
 router.delete(
-  "/:projectId/:tasks/:taskId",
+  "/:projectId/tasks/:taskId",
   param("taskId").isMongoId().withMessage("este ID no es valido"),
   handleInputErrors, // el middleware uque creamos para los errores
   TaskController.deleteTask
+);
+
+// actualizar el status de una tarea
+router.post(
+  "/:projectId/tasks/:taskId/status",
+  param("taskId").isMongoId().withMessage("este ID no es valido"),
+  body("status").notEmpty().withMessage("el estado es obligatorio"),
+  handleInputErrors,
+  TaskController.updateStatus
 );
 
 export default router;

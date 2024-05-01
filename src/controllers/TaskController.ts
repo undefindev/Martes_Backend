@@ -85,7 +85,7 @@ export class TaskController {
   static deleteTask = async (req: Request, res: Response) => {
     try {
       const { taskId } = req.params;
-      const task = await Task.findById(taskId, req.body);
+      const task = await Task.findById(taskId);
       if (!task) {
         const error = new Error("tarea no encontrada");
         return res.status(404).json({ error: error.message });
@@ -107,7 +107,28 @@ export class TaskController {
       res.status(500).json({ error: "algo salio mal" });
     }
   };
+
+  static updateStatus = async (req: Request, res: Response) => {
+    try {
+      const { taskId } = req.params; // primero revisas la tarea y despues...
+
+      const task = await Task.findById(taskId);
+      if (!task) {
+        const error = new Error("tarea no encontrada");
+        return res.status(404).json({ error: error.message });
+      }
+
+      const { status } = req.body; // revisas el estado
+      task.status = status;
+      await task.save();
+      res.send("estado actualizado");
+    } catch (error) {
+      res.status(500).json({ error: "valio vrga..!!" });
+    }
+  };
 }
+
+/* notas */
 
 /* este fue para crear la tarea, asignarla al projecto este codigo quedo un poco mas limpio que el de projectController.. segun, aqui no hay validacion el middleware se encarga de hacer todo el desmadre */
 
