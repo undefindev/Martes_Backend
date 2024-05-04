@@ -1,5 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import cors from 'cors'
+import { corsConfig } from './config/cors'
 import { connectDB } from './config/db'
 import projectRoutes from './routes/projectRoutes'
 
@@ -11,6 +13,9 @@ connectDB()
 
 // creamos la instancia de express.. que no se que vrga es una instancia todavia a ciencia cierta por cierto
 const app = express()
+
+// una vez que creamos la coneccion.. peromitimos las conecciones
+app.use(cors(corsConfig))
 
 // avilitamos la lectura de los .json
 app.use(express.json())
