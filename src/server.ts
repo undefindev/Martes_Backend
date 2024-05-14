@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import morgan from 'morgan'
 import { corsConfig } from './config/cors'
 import { connectDB } from './config/db'
 import projectRoutes from './routes/projectRoutes'
@@ -16,6 +17,11 @@ const app = express()
 
 // una vez que creamos la coneccion.. peromitimos las conecciones
 app.use(cors(corsConfig))
+
+// Logging
+app.use(morgan('dev'))
+
+// Leer los datos del formulario
 
 // avilitamos la lectura de los .json
 app.use(express.json())
