@@ -23,7 +23,7 @@ export const corsConfig: CorsOptions = {
       whiteList.push(undefined)
     }
 
-    ... no entendi ni vrga de que es esto peroo se que sirve para decir. estamos en modo api y que no choque el cors
+    ... no entendi ni vrga de que es esto peroo se que sirve para decir. estamos en modo api y que no choque el cors y el thunder client no marque error al probar los endpoints o algo asi
 
     el 'undefined es porque thunderclient o postman no tienen un origin como tal. pero el navegador si lo tiene
 
