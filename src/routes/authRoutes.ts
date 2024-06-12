@@ -19,11 +19,21 @@ router.post('/create-account',
   AuthController.createAccount
 )
 
+
+// confirmar una cuenta
 router.post('/confirm-account',
   body('token')
     .notEmpty().withMessage('Token no puede estar vacio'),
   handleInputErrors,
   AuthController.confirmAccount
+)
+
+// login
+router.post('/login',
+  body('email').isEmail().withMessage('eMail no valido'),
+  body('password').notEmpty().withMessage('se requiere el password'),
+  handleInputErrors,
+  AuthController.login
 )
 
 
