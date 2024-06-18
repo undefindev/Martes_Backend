@@ -1,12 +1,13 @@
 import type { Request, Response } from 'express'
 import User from '../models/User'
-import { checkPassword, hashPassword } from '../utils/auth'
 import Token from '../models/Token';
+import { checkPassword, hashPassword } from '../utils/auth'
 import { generateToken } from '../utils/Token'
 import { AuthEmail } from '../emails/AuthEmail'
 
 export class AuthController {
 
+  // create account
   static createAccount = async (req: Request, res: Response) => {
     try {
       const { password, email } = req.body
@@ -48,6 +49,7 @@ export class AuthController {
     }
   }
 
+  // confirm account
   static confirmAccount = async (req: Request, res: Response) => {
     try {
       const { token } = req.body
@@ -110,6 +112,48 @@ export class AuthController {
 
     } catch (error) {
       res.status(500).json({ error: 'valio verdolaga..!!' })
+    }
+  }
+
+  // resend Code .. vuelve a enviar el token
+  static resendCode = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body
+
+      // revisamos si el usuario existe
+      const user = await User.findOne({ email })
+      if (!user) {
+        const error = new Error('Usuario no Registrado')
+        return res.status(404).json({ error: error.message })
+      }
+
+      // si el usuario ya confirmo su cuenta.. entonce lo mandamos a vrga
+      if (user.confirmed) {
+        const error = new Error('Tu Ya Confirmaste Tu cuenta Pendejo..!!')
+        return res.status(404).json({ error: error.message })
+      }
+
+      // generar el token hijo de puta
+      const token = new Token()
+      token.token = generateToken()
+      token.user = user.id
+
+      // enviar el email de confirmacion de cuenta
+      AuthEmail.sendConfirmaionEmail({
+        email: user.email,
+        name: user.name,
+        token: token.token
+      })
+
+
+      /* await user.save()
+      await token.save() */
+
+      await Promise.allSettled([user.save(), token.save()])
+
+      res.send('ahi te mandams otro token.. hdtpm')
+    } catch (error) {
+      res.status(500).json({ error: 'Hubo un Maldtio error' })
     }
   }
 }

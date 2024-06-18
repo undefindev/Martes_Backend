@@ -36,6 +36,13 @@ router.post('/login',
   AuthController.login
 )
 
+// resend code
+router.post('/request-code',
+  body('email').isEmail().withMessage('eMail no valido'),
+  handleInputErrors,
+  AuthController.resendCode
+)
+
 
 
 

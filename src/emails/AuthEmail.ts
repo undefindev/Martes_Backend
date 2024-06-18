@@ -15,7 +15,7 @@ export class AuthEmail {
       text: 'martes.net - Confirma tu Maldita Cuenta.. por favor..!!',
       html: ` <p>Hola: ${user.name}, has creado tu cuenta. 'ya casi estas dentro'..</p>
               <p>Visita el Siguiente enlace:</p>
-              <a href="">Confirmar</a>
+              <a href="${process.env.FRONTEND_URL}/auth/confirm-account">Confirmar</a>
               <p>Ingresa el codigo: <b>${user.token}</b>, y dejate de mamadas</p>
               <p>Token expira en 10 min</p>`
     })
