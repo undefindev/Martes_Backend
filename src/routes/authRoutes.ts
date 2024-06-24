@@ -37,10 +37,10 @@ router.post('/login',
 )
 
 // resend code
-router.post('/request-code',
+router.post('/forgot-password',
   body('email').isEmail().withMessage('eMail no valido'),
   handleInputErrors,
-  AuthController.resendCode
+  AuthController.forgotPassword
 )
 
 

@@ -74,6 +74,8 @@ export class AuthController {
 
   }
 
+
+  // login
   static login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body
@@ -115,8 +117,8 @@ export class AuthController {
     }
   }
 
-  // resend Code .. vuelve a enviar el token
-  static resendCode = async (req: Request, res: Response) => {
+  // resend Code .. vuelve a enviar el token manualmente
+  static requestConfirmationCode = async (req: Request, res: Response) => {
     try {
       const { email } = req.body
 
@@ -152,6 +154,37 @@ export class AuthController {
       await Promise.allSettled([user.save(), token.save()])
 
       res.send('ahi te mandams otro token.. hdtpm')
+    } catch (error) {
+      res.status(500).json({ error: 'Hubo un Maldtio error' })
+    }
+  }
+
+  // forgot password
+  static forgotPassword = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body
+
+      // revisamos si el usuario existe
+      const user = await User.findOne({ email })
+      if (!user) {
+        const error = new Error('Usuario no Registrado')
+        return res.status(404).json({ error: error.message })
+      }
+
+      // generar el token hijo de puta
+      const token = new Token()
+      token.token = generateToken()
+      token.user = user.id
+      await token.save()
+
+      // enviar el email de confirmacion de cuenta
+      AuthEmail.sendPasswordResetToken({
+        email: user.email,
+        name: user.name,
+        token: token.token
+      })
+
+      res.send('Revisa tu email.. y callate el hocico')
     } catch (error) {
       res.status(500).json({ error: 'Hubo un Maldtio error' })
     }
