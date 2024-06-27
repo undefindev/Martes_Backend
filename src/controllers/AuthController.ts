@@ -209,4 +209,32 @@ export class AuthController {
     }
 
   }
+
+  // set new password
+  static updatePasswordWhitToken = async (req: Request, res: Response) => {
+    try {
+      const { token } = req.params
+      const { password } = req.body
+
+      const tokenExist = await Token.findOne({ token })
+      if (!tokenExist) {
+        const error = new Error('token no valido')
+        return res.status(404).json({ error: error.message })
+      }
+
+      /* buscamos el usuario por su ID, y luego haseaños el password con la funcion */
+      const user = await User.findById(tokenExist.user) // aqui buscamos al usuario
+      user.password = await hashPassword(password) // y aqui hasheamos el password que viene del body
+
+      /* guardamos el nuevo password y eliminamos el token */
+      await Promise.allSettled([user.save(), tokenExist.deleteOne()])
+
+      /* esta es la respuesta que manada el backen y se muestra atravez del toast */
+      res.send('Se modifico el password correctamente')
+
+    } catch (error) {
+      res.status(500).json({ error: 'valio vrga..!!' })
+    }
+
+  }
 }

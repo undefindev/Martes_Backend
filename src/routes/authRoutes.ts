@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { AuthController } from "../controllers/AuthController";
 import { handleInputErrors } from "../middleware/validation";
 
@@ -51,6 +51,19 @@ router.post('/validate-token',
   AuthController.validateToken
 )
 
+/* validando el token de forgot password */
+router.post('/update-password/:token',
+  param('token').isNumeric().withMessage('token no valido'),
+  body('password').isLength({ min: 8 }).withMessage('Minimo 8 caracteres'),
+  body('password_confirmation').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Los Malditos Password no son iguales')
+    }
+    return true
+  }),
+  handleInputErrors,
+  AuthController.updatePasswordWhitToken
+)
 
 
 
