@@ -62,7 +62,7 @@ router.post('/update-password/:token',
     return true
   }),
   handleInputErrors,
-  AuthController.updatePasswordWhitToken
+  AuthController.updatePasswordWithToken
 )
 
 

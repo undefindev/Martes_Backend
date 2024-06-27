@@ -211,7 +211,7 @@ export class AuthController {
   }
 
   // set new password
-  static updatePasswordWhitToken = async (req: Request, res: Response) => {
+  static updatePasswordWithToken = async (req: Request, res: Response) => {
     try {
       const { token } = req.params
       const { password } = req.body
