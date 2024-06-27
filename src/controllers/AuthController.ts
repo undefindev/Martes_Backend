@@ -184,9 +184,29 @@ export class AuthController {
         token: token.token
       })
 
-      res.send('Revisa tu email.. y callate el hocico')
+      res.send('Revisa tu email.. ')
     } catch (error) {
       res.status(500).json({ error: 'Hubo un Maldtio error' })
     }
+  }
+
+  // validando el token otra vex
+  static validateToken = async (req: Request, res: Response) => {
+    try {
+      const { token } = req.body
+
+      const tokenExist = await Token.findOne({ token })
+      if (!tokenExist) {
+        const error = new Error('token no valido')
+        return res.status(404).json({ error: error.message })
+      }
+
+      /* esta es la respuesta que manada el backen y se muestra atravez del toast */
+      res.send('Ingresa un Nuevo Password')
+
+    } catch (error) {
+      res.status(500).json({ error: 'valio vrga..!!' })
+    }
+
   }
 }
