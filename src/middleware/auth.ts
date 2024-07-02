@@ -1,6 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
+import User, { IUser } from "../models/User";
+
+// con esto no se vrga hicimos.. pero sirve para que no truene
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUser
+    }
+  }
+}
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   const bearer = req.headers.authorization
@@ -17,8 +26,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     const decoded = jwt.verify(token, process.env.JWT_SECRET) // revisa que el token sea valido.. que no expiro
 
     if (typeof decoded === 'object' && decoded.id) {
-      const user = await User.findById(decoded.id) // y tambien revisamos en la DB que el usuario existe
-      console.log(user)
+      const user = await User.findById(decoded.id).select('_id name email') // y tambien revisamos en la DB que el usuario existe
+
+      // con esto revisamos si el usuario todavia existe
+      if (user) {
+        req.user = user // para que no truene esto
+      } else {
+        res.status(500).json({ error: 'el Maldito Token no es valido perro' }) // esto es para confundir al enemigo
+      }
     }
 
   } catch (error) {
