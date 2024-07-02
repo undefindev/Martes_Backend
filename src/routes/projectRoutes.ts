@@ -5,13 +5,16 @@ import { handleInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
 import { projectExists } from "../middleware/project";
 import { taskBeLongToProject, taskExists } from "../middleware/task";
+import { authenticate } from "../middleware/auth";
 
 const router = Router();
 
 // rutas para los malditos projectos
+
+
 // para crear un projecto nuevo
 router.post(
-  "/",
+  "/", authenticate, // este es para protejer la ruta.. segun..!!
   body("projectName")
     .notEmpty()
     .withMessage("todos los malditos campos son obligatorios vrga..!"),
@@ -24,6 +27,7 @@ router.post(
   handleInputErrors,
   ProjectController.createProject
 );
+
 
 // para jalar todos los projectos
 router.get("/", ProjectController.getAllProjects);
