@@ -6,7 +6,10 @@ export class ProjectController {
   // estos metodos son staticos porque no requiren ser instanciados
   static createProject = async (req: Request, res: Response) => {
     const project = new Project(req.body); // creamos el projecto
-    console.log(req.user)
+
+    // y le asignamos la persona que lo creo para que nadie lo borre
+    project.manager = req.user.id
+
     try {
       await project.save(); // luego lo guardamos
       res.send('Projecto Creado'); // si todo bien nos muestra este mensaje
