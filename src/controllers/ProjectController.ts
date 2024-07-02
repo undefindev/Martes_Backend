@@ -45,6 +45,7 @@ export class ProjectController {
         return res.status(404).json({ error: error.message });
       }
 
+      // este codigo nos sirve para los otros.. deberiamos de hacer un middleware para no estar repitiendo codigo
       if (project.manager.toString() !== req.user.id.toString()) {
         const error = new Error("accion no valida");
         return res.status(404).json({ error: error.message });
@@ -64,6 +65,12 @@ export class ProjectController {
       if (!project) {
         // este no se porque no esa jalando.. entra primero el otro console
         const error = new Error("No se Encontro el Projecto");
+        return res.status(404).json({ error: error.message });
+      }
+
+      // revisamos q si sea el manager o creador o que tenga las credenciales
+      if (project.manager.toString() !== req.user.id.toString()) {
+        const error = new Error("no tienes credenciales correctas");
         return res.status(404).json({ error: error.message });
       }
 
@@ -89,6 +96,12 @@ export class ProjectController {
       if (!project) {
         // este no se porque no esa jalando.. entra primero el otro console
         const error = new Error("No se Encontro el Projecto");
+        return res.status(404).json({ error: error.message });
+      }
+
+      // revisamos q si sea el manager o creador o que tenga las credenciales
+      if (project.manager.toString() !== req.user.id.toString()) {
+        const error = new Error("no tienes credenciales correctas");
         return res.status(404).json({ error: error.message });
       }
 
