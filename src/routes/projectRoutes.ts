@@ -9,12 +9,13 @@ import { authenticate } from "../middleware/auth";
 
 const router = Router();
 
+router.use(authenticate) // este es para protejer las rutas.. segun..!!
+
 // rutas para los malditos projectos
 
 
 // para crear un projecto nuevo
-router.post(
-  "/", authenticate, // este es para protejer la ruta.. segun..!!
+router.post("/",
   body("projectName")
     .notEmpty()
     .withMessage("todos los malditos campos son obligatorios vrga..!"),
@@ -30,7 +31,7 @@ router.post(
 
 
 // para jalar todos los projectos
-router.get("/", authenticate, ProjectController.getAllProjects);
+router.get("/", ProjectController.getAllProjects);
 
 // obtener un projecto por su id unico de MongoDB
 router.get(
