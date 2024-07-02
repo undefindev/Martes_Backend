@@ -22,7 +22,11 @@ export class ProjectController {
   // este es para jalar todos los projectos.. usamos un 'find'
   static getAllProjects = async (req: Request, res: Response) => {
     try {
-      const projects = await Project.find({}); // metodo 'find'
+      const projects = await Project.find({
+        $or: [
+          { manager: { $in: req.user.id } } // con esta mamada nos traemos nada mas los projectos que corresponden al usuario
+        ]
+      }); // metodo 'find'
       res.json(projects);
     } catch (error) {
       console.log(error); // esto para que nos muestre el error si algo salio mal

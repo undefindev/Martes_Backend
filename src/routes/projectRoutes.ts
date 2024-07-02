@@ -30,7 +30,7 @@ router.post(
 
 
 // para jalar todos los projectos
-router.get("/", ProjectController.getAllProjects);
+router.get("/", authenticate, ProjectController.getAllProjects);
 
 // obtener un projecto por su id unico de MongoDB
 router.get(
