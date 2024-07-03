@@ -213,7 +213,7 @@ export class AuthController {
 
   }
 
-  // set new password
+  // user para redirigir al usuario a su pagina
   static updatePasswordWithToken = async (req: Request, res: Response) => {
     try {
       const { token } = req.params
@@ -240,4 +240,11 @@ export class AuthController {
     }
 
   }
+
+  // 
+  static user = async (req: Request, res: Response) => {
+    return res.json(req.user)
+
+  }
+
 }

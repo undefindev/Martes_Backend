@@ -31,6 +31,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
       // con esto revisamos si el usuario todavia existe
       if (user) {
         req.user = user // para que no truene esto
+        next()
       } else {
         res.status(500).json({ error: 'el Maldito Token no es valido perro' }) // esto es para confundir al enemigo
       }
@@ -39,7 +40,5 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   } catch (error) {
     res.status(500).json({ error: 'el Maldito Token no es valido perro' })
   }
-
-  next()
 
 }
