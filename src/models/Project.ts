@@ -10,6 +10,7 @@ export interface IProject extends Document {
   description: string
   tasks: PopulatedDoc<ITask & Document>[] // esto lo hicimos porque typeScript interpreta los subdocumentos de mongo como arreglos..
   manager: PopulatedDoc<IUser & Document>
+  team: PopulatedDoc<IUser & Document>[]
 }
 
 // y este el schema
@@ -39,7 +40,13 @@ const ProjectSchema: Schema = new Schema({
   manager: {
     type: Types.ObjectId,
     ref: 'User'
-  }
+  },
+  team: [
+    {
+      type: Types.ObjectId,
+      ref: 'User'
+    }
+  ],
 }, { timestamps: true })
 
 // aqui definimos el modelo y se registra en la instancia de mongoos
