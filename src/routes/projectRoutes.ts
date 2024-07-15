@@ -142,6 +142,10 @@ router.post(
   TeamMeamberController.findMemberByEmail
 )
 
+router.get('/:projectId/team',
+  TeamMeamberController.getProjectTeam
+)
+
 router.post(
   "/:projectId/team",
   body('id')
