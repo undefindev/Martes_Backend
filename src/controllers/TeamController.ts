@@ -25,7 +25,17 @@ export class TeamMeamberController {
       return res.status(404).json({ error: error.message })
     }
 
-    res.json(user)
+    // revisamos si ya esta agregado en el equipo
+    if (req.project.team.some(team => team.toString() === user.id.toString())) {
+      const error = new Error('el usuario ya esta en el equipo')
+      return res.status(409).json({ error: error.message })
+    }
+
+    // agregando al usuario
+    req.project.team.push(user.id)
+    await req.project.save()
+
+    res.json('Colaborador agregado Correctamente')
 
 
   }
