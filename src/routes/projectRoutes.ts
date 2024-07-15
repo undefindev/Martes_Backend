@@ -151,6 +151,15 @@ router.post(
 
 )
 
+router.delete(
+  "/:projectId/team",
+  body('id')
+    .isMongoId().withMessage('ID No valido'),
+  handleInputErrors,
+  TeamMeamberController.removeMemberById
+
+)
+
 export default router;
 
 /* primero teniamos la sigiente sintasis
