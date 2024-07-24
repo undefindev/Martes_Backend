@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import User from "../models/User";
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import Project from "../models/Project";
 
 export class TeamMeamberController {
@@ -52,17 +52,17 @@ export class TeamMeamberController {
 
   // sacar al usuario del grupo
   static removeMemberById = async (req: Request, res: Response) => {
-    const { id } = req.body
+    const { userId } = req.params
 
     // revisamos que ya no este  en el equipo primero que nada
-    if (!req.project.team.some(team => team.toString() === id)) {
-      const error = new Error('el miembro ya te lo sacaron')
+    if (!req.project.team.some(team => team.toString() === userId)) {
+      const error = new Error('el miembro ya te lo sacaron') // cuando ya esta eliminado
       return res.status(409).json({ error: error.message })
     }
-    req.project.team = req.project.team.filter(teamMember => teamMember.toString() !== id)
+    req.project.team = req.project.team.filter(teamMember => teamMember.toString() !== userId)
     await req.project.save()
 
-    res.json('Chingo a su Madre')
+    res.json('Chingo a su Madre') // cuando lo eliminamos
   }
 
 }
