@@ -24,7 +24,8 @@ export class ProjectController {
     try {
       const projects = await Project.find({
         $or: [
-          { manager: { $in: req.user.id } } // con esta mamada nos traemos nada mas los projectos que corresponden al usuario
+          { manager: { $in: req.user.id } }, // con esta mamada nos traemos nada mas los projectos que corresponden al usuario
+          { team: { $in: req.user.id } } // con esto verificamos que el colaborador este en el projecto y pueda ver los projectos en los que esta agregado
         ]
       }); // metodo 'find'
       res.json(projects);
@@ -46,7 +47,7 @@ export class ProjectController {
       }
 
       // este codigo nos sirve para los otros.. deberiamos de hacer un middleware para no estar repitiendo codigo
-      if (project.manager.toString() !== req.user.id.toString()) {
+      if (project.manager.toString() !== req.user.id.toString() && !project.team.includes(req.user.id)) {
         const error = new Error("accion no valida");
         return res.status(404).json({ error: error.message });
       }
