@@ -19,7 +19,7 @@ export class ProjectController {
     }
   };
 
-  // este es para jalar todos los projectos.. usamos un 'find'
+  // este es para jalar todos los projectos.. usamos un '.find'
   static getAllProjects = async (req: Request, res: Response) => {
     try {
       const projects = await Project.find({
