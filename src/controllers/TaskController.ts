@@ -32,7 +32,8 @@ export class TaskController {
   // traernos una tarea por su ID
   static getTaskById = async (req: Request, res: Response) => {
     try {
-      res.json(req.task);
+      const task = await Task.findById(req.task.id).populate({ path: 'completedBy', select: 'id name email' }) // aqui quien sabe que vrga hicimos
+      res.json(task);
     } catch (error) {
       res.status(500).json({ error: "valio mandarina..!!" });
     }
