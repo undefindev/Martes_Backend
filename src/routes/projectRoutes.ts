@@ -4,7 +4,7 @@ import { ProjectController } from "../controllers/ProjectController";
 import { handleInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
 import { projectExists } from "../middleware/project";
-import { taskBeLongToProject, taskExists } from "../middleware/task";
+import { hasAuthorization, taskBeLongToProject, taskExists } from "../middleware/task";
 import { authenticate } from "../middleware/auth";
 import { TeamMeamberController } from "../controllers/TeamController";
 
@@ -75,7 +75,7 @@ router.delete(
 router.param("projectId", projectExists);
 
 router.post(
-  "/:projectId/tasks",
+  "/:projectId/tasks", hasAuthorization, // esto para que el maldito no pueda crear tareas en un proyecto que no es de el
   /* validateProjectExists, */ // si existe el projecto se pasa al controlador
   body("name")
     .notEmpty()
@@ -107,6 +107,7 @@ router.get(
 
 router.put(
   "/:projectId/:tasks/:taskId",
+  hasAuthorization,
   param("taskId").isMongoId().withMessage("este ID no es valido"), // validamos que sea un registro de mongo valido y despues
   // validamos los campos
   body("name").notEmpty().withMessage("el nombre de la TAREA es obligatorio"),
@@ -120,6 +121,7 @@ router.put(
 // ruta para eliminar una tarea en especifico
 router.delete(
   "/:projectId/tasks/:taskId",
+  hasAuthorization, // el middleware que revisa si el usuario es manager
   param("taskId").isMongoId().withMessage("este ID no es valido"),
   handleInputErrors, // el middleware uque creamos para los errores
   TaskController.deleteTask

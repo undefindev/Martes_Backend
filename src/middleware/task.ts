@@ -47,3 +47,17 @@ export function taskBeLongToProject(
 }
 
 /* este codigo nada mas revisa si el projecto existe, toma el 'projectId' desde la 'url' revisa si existe, si no existe manda la respuesta de error pero si existe se va al siguiente 'middleware' y lo vamos a usar en el projectRoutes antes del controlador */
+
+
+export function hasAuthorization(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  // si la tarea no corresponde al projecto
+  if (req.user.id.toString() !== req.project.manager.toString()) {
+    const error = new Error("Accion no valida");
+    return res.status(400).json({ error: error.message });
+  }
+  next(); /* todo bien?.. pasate al siguiente middleware */
+}
