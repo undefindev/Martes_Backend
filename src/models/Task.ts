@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Types} from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 // creamos el stado para las tareas.. creamos un diccionario
 const taskStatus = {
@@ -19,6 +19,7 @@ export interface ITask extends Document {
   description: string
   project: Types.ObjectId // aqui agregamos el id del projecto
   status: TaskStatus
+  completedBy: Types.ObjectId
 }
 
 // creamos el schema de mongo
@@ -43,8 +44,13 @@ export const TaskSchema: Schema = new Schema({
     type: String,
     enum: Object.values(taskStatus), // esto porque no podemos pasarle el type directamente
     default: taskStatus.PENDING // este sera el valor que tenga por defecto cada tarea nueva.. hasta que se le asigne un chango que se ponga a trabajar en ella
+  },
+  completedBy: {
+    type: Types.ObjectId,
+    ref: 'User',
+    default: null
   }
-}, {timestamps: true})
+}, { timestamps: true })
 
 const Task = mongoose.model<ITask>('Task', TaskSchema)
 export default Task
