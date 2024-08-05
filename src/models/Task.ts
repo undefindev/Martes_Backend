@@ -19,7 +19,10 @@ export interface ITask extends Document {
   description: string
   project: Types.ObjectId // aqui agregamos el id del projecto
   status: TaskStatus
-  completedBy: Types.ObjectId
+  completedBy: {
+    user: Types.ObjectId,
+    status: TaskStatus
+  }[] // le ponemos la sintaxis de array para que no se confunda
 }
 
 // creamos el schema de mongo
@@ -45,11 +48,20 @@ export const TaskSchema: Schema = new Schema({
     enum: Object.values(taskStatus), // esto porque no podemos pasarle el type directamente
     default: taskStatus.PENDING // este sera el valor que tenga por defecto cada tarea nueva.. hasta que se le asigne un chango que se ponga a trabajar en ella
   },
-  completedBy: {
-    type: Types.ObjectId,
-    ref: 'User',
-    default: null
-  }
+  completedBy: [
+    {
+      user: {
+        type: Types.ObjectId,
+        ref: 'User',
+        default: null
+      },
+      status: {
+        type: String,
+        enum: Object.values(taskStatus),
+        default: taskStatus.PENDING
+      }
+    }
+  ]
 }, { timestamps: true })
 
 const Task = mongoose.model<ITask>('Task', TaskSchema)

@@ -32,7 +32,7 @@ export class TaskController {
   // traernos una tarea por su ID
   static getTaskById = async (req: Request, res: Response) => {
     try {
-      const task = await Task.findById(req.task.id).populate({ path: 'completedBy', select: 'id name email' }) // aqui quien sabe que vrga hicimos
+      const task = await Task.findById(req.task.id).populate({ path: 'completedBy.user', select: 'id name email' }) // aqui quien sabe que vrga hicimos
       res.json(task);
     } catch (error) {
       res.status(500).json({ error: "valio mandarina..!!" });
@@ -77,11 +77,11 @@ export class TaskController {
     try {
       const { status } = req.body; // revisas el estado
       req.task.status = status;
-      if (status === 'pending') {
-        req.task.completedBy = null
-      } else {
-        req.task.completedBy = req.user.id // con este se cual quien la modifico
+      const data = {
+        user: req.user.id,
+        status
       }
+      req.task.completedBy.push(data) // con este se quien la modifico
       await req.task.save();
       res.send("estado actualizado");
     } catch (error) {
