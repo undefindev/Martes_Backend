@@ -23,9 +23,12 @@ export interface ITask extends Document {
     user: Types.ObjectId,
     status: TaskStatus
   }[] // le ponemos la sintaxis de array para que no se confunda
+  note: Types.ObjectId[]
 }
 
-// creamos el schema de mongo
+
+// creamos los schema de mongo
+
 // creamos la funcion, luego creamos la variable de coneccion y despues la exportamos
 export const TaskSchema: Schema = new Schema({
   name: {
@@ -60,6 +63,12 @@ export const TaskSchema: Schema = new Schema({
         enum: Object.values(taskStatus),
         default: taskStatus.PENDING
       }
+    }
+  ],
+  note: [
+    {
+      type: Types.ObjectId,
+      ref: 'Note'
     }
   ]
 }, { timestamps: true })
