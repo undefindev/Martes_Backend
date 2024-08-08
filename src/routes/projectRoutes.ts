@@ -173,11 +173,17 @@ router.post('/:projectId/tasks/:taskId/notes',
   NoteController.createNote
 )
 
+// traernos una tarea en especifico
+router.get('/:projectId/tasks/:taskId/notes',
+  NoteController.getTaskNotes
+
+)
+
 
 
 export default router;
 
-/* primero teniamos la sigiente sintasis
+/* primero teniamos la sigiente sintaxis
   router.get('/:projectId/:tasks/:taskId',
   validateProjectExists,
   TaskController.getTaskById

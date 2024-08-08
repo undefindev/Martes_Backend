@@ -32,7 +32,9 @@ export class TaskController {
   // traernos una tarea por su ID
   static getTaskById = async (req: Request, res: Response) => {
     try {
-      const task = await Task.findById(req.task.id).populate({ path: 'completedBy.user', select: 'id name email' }) // aqui quien sabe que vrga hicimos
+      const task = await Task.findById(req.task.id)
+        .populate({ path: 'completedBy.user', select: 'id name email' })
+        .populate({ path: 'notes', populate: { path: 'createdBy', select: 'id name email' } }) // aqui quien sabe que vrga hicimos.. deep populate creo
       res.json(task);
     } catch (error) {
       res.status(500).json({ error: "valio mandarina..!!" });
