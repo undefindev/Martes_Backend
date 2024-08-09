@@ -23,7 +23,7 @@ export interface ITask extends Document {
     user: Types.ObjectId,
     status: TaskStatus
   }[] // le ponemos la sintaxis de array para que no se confunda
-  note: Types.ObjectId[]
+  notes: Types.ObjectId[]
 }
 
 
@@ -65,7 +65,7 @@ export const TaskSchema: Schema = new Schema({
       }
     }
   ],
-  note: [
+  notes: [
     {
       type: Types.ObjectId,
       ref: 'Note'

@@ -176,7 +176,13 @@ router.post('/:projectId/tasks/:taskId/notes',
 // traernos una tarea en especifico
 router.get('/:projectId/tasks/:taskId/notes',
   NoteController.getTaskNotes
+)
 
+// borrar una tarea
+router.delete('/:projectId/tasks/:taskId/notes/:noteId',
+  param('noteId').isMongoId().withMessage('Id no valido'),
+  handleInputErrors,
+  NoteController.deleteNote
 )
 
 
