@@ -72,6 +72,30 @@ router.get('/user',
   AuthController.user
 )
 
+/* Profile */
+router.put('/profile',
+  authenticate,
+  body('name').notEmpty().withMessage('Se requiere el Nombre'),
+  body('email').isEmail().withMessage('Email no Valido'),
+  handleInputErrors,
+  AuthController.updateProfile
+)
+
+// primero revisamos que el password actual sea el correcot y luego le pasamos el nuevo password
+router.post('/update-password',
+  authenticate,
+  body('current_password').notEmpty().withMessage('Se requiere el password actual'),
+  body('password').isLength({ min: 8 }).withMessage('Minimo 8 caracteres'),
+  body('password_confirmation').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Los Malditos password no son iguales')
+    }
+    return true
+  }),
+  handleInputErrors,
+  AuthController.updateCurrentUserPassword
+)
+
 
 
 
