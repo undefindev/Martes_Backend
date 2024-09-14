@@ -20,13 +20,13 @@ router.use(authenticate) // este es para protejer las rutas.. segun..!!
 router.post("/",
   body("projectName")
     .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+    .withMessage("todos los campos son obligatorios..!"),
   body("clientName")
     .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+    .withMessage("todos los campos son obligatorios..!"),
   body("description")
     .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+    .withMessage("todos los campos son obligatorios..!"),
   handleInputErrors,
   ProjectController.createProject
 );
@@ -43,47 +43,47 @@ router.get(
   ProjectController.getProjectById
 );
 
-// oactualizar un registro.. lo mas dificil
-router.put(
-  "/:id",
-  param("id").isMongoId().withMessage("este ID no es valido"), // validamos el 'id' y despues validamos los datos
-  body("projectName")
-    .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
-  body("clientName")
-    .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
-  body("description")
-    .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
-  handleInputErrors, // el middleware uque creamos para los errores
-  ProjectController.updateProject
-);
-
-// la mas facil 'delete'
-router.delete(
-  "/:id",
-  param("id").isMongoId().withMessage("este ID no es valido"),
-  handleInputErrors, // el middleware uque creamos para los errores
-  ProjectController.deleteProject
-);
-
-/* podriamos crear un nuevo archivo de rutas para las tareas.. pero como las tareas dependen de los proyectos lo vamos a crear aqui mismo */
-
 /** Route para las tareas */
 
 // implementamos un 'param' para no repetir el middleware de validacion en cada ruta
 router.param("projectId", projectExists);
+
+// oactualizar un registro.. lo mas dificil
+router.put("/:projectId",
+  param("projectId").isMongoId().withMessage("este ID no es valido"), // validamos el 'id' y despues validamos los datos
+  body("projectName")
+    .notEmpty()
+    .withMessage("el nombre del proyecto es obligatorio"),
+  body("clientName")
+    .notEmpty()
+    .withMessage("nombre del cliente es obligatorio"),
+  body("description")
+    .notEmpty()
+    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+  handleInputErrors, // el middleware uque creamos para los errores
+  hasAuthorization,
+  ProjectController.updateProject
+);
+
+// la mas facil 'delete'
+router.delete("/:projectId",
+  param("projectId").isMongoId().withMessage("este ID no es valido"),
+  handleInputErrors,
+  hasAuthorization,
+  ProjectController.deleteProject
+);
+
+/* podriamos crear un nuevo archivo de rutas para las tareas.. pero como las tareas dependen de los proyectos lo vamos a crear aqui mismo */
 
 router.post(
   "/:projectId/tasks", hasAuthorization, // esto para que el maldito no pueda crear tareas en un proyecto que no es de el
   /* validateProjectExists, */ // si existe el projecto se pasa al controlador
   body("name")
     .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+    .withMessage("todos los campos son obligatorios..!"),
   body("description")
     .notEmpty()
-    .withMessage("todos los malditos campos son obligatorios vrga..!"),
+    .withMessage("todos los campos son obligatorios..!"),
   handleInputErrors, // el middleware uque creamos para los errores
   TaskController.createTask
 );

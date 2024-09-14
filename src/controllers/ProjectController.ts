@@ -59,27 +59,12 @@ export class ProjectController {
 
   // actualizar un maldito registro'
   static updateProject = async (req: Request, res: Response) => {
-    const { id } = req.params;
     try {
-      const project = await Project.findById(id); // esta vez toma dos parametros"
+      req.project.clientName = req.body.clientName;
+      req.project.projectName = req.body.projectName;
+      req.project.description = req.body.description;
 
-      if (!project) {
-        // este no se porque no esa jalando.. entra primero el otro console
-        const error = new Error("No se Encontro el Projecto");
-        return res.status(404).json({ error: error.message });
-      }
-
-      // revisamos q si sea el manager o creador o que tenga las credenciales
-      if (project.manager.toString() !== req.user.id.toString()) {
-        const error = new Error("no tienes credenciales correctas");
-        return res.status(404).json({ error: error.message });
-      }
-
-      project.clientName = req.body.clientName;
-      project.projectName = req.body.projectName;
-      project.description = req.body.description;
-
-      await project.save();
+      await req.project.save();
       res.send("projecto Actualizado");
     } catch (error) {
       console.log(error); // esto para que nos muestre el error si algo salio mal
@@ -88,25 +73,8 @@ export class ProjectController {
 
   // actualizar un maldito registro'
   static deleteProject = async (req: Request, res: Response) => {
-    const { id } = req.params;
     try {
-      /* const project = await Project.findByIdAndDelete(id)
-        res.send('projecto Eliminado') .. este se utiliza en caso de eliminacion normal.. pero nosotros ocupamos privilegios para eliminar una tarea */
-      const project = await Project.findById(id);
-
-      if (!project) {
-        // este no se porque no esa jalando.. entra primero el otro console
-        const error = new Error("No se Encontro el Projecto");
-        return res.status(404).json({ error: error.message });
-      }
-
-      // revisamos q si sea el manager o creador o que tenga las credenciales
-      if (project.manager.toString() !== req.user.id.toString()) {
-        const error = new Error("no tienes credenciales correctas");
-        return res.status(404).json({ error: error.message });
-      }
-
-      await project.deleteOne();
+      await req.project.deleteOne();
       res.send("projecto eliminado");
     } catch (error) {
       console.log(error); // esto para que nos muestre el error si algo salio mal
