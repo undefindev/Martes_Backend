@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, PopulatedDoc, Types } from "mongoose";
-import { ITask } from "./Task";
+import Task, { ITask } from "./Task";
 import { IUser } from "./User";
+import Note from "./Note";
 
 
 // este es el type de typeScript
@@ -48,6 +49,20 @@ const ProjectSchema: Schema = new Schema({
     }
   ],
 }, { timestamps: true })
+
+// Middelware .. ojo tiene que ser antes del modelo, si no no funciona, es para eliminar el projecto, tareas y notas
+ProjectSchema.pre('deleteOne', { document: true }, async function () {
+  const projecId = this._id // aqui recuperamos el 'projectId'
+  if (!projecId) return
+
+  // aqui nos traemos todas as tareas relacionadas al projecto
+  const tasks = await Task.find({ project: projecId })
+  for (const task of tasks) {
+    await Note.deleteMany({ task: task.id })
+  } // con esta mamada estamos eliminando las notas porque no se eliminaban al eliminar el projecto, se quedaba en la DB.. que horror
+
+  await Task.deleteMany({ project: projecId })
+})
 
 // aqui definimos el modelo y se registra en la instancia de mongoos
 const Project = mongoose.model<IProject>('Project', ProjectSchema)

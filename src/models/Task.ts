@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
+import Note from "./Note";
 
 // creamos el stado para las tareas.. creamos un diccionario
 const taskStatus = {
@@ -72,6 +73,13 @@ export const TaskSchema: Schema = new Schema({
     }
   ]
 }, { timestamps: true })
+
+// Middelware
+TaskSchema.pre('deleteOne', { document: true }, async function () {
+  const taskId = this._id // este es el id de la tarea que referencia la nota
+  if (!taskId) return
+  await Note.deleteMany({ task: taskId })
+})
 
 const Task = mongoose.model<ITask>('Task', TaskSchema)
 export default Task
